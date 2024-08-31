@@ -128,15 +128,33 @@
             "description": "button lock text [User = {query}]",
             "value": "Hᴇʏ {query}\nTʜɪꜱ Iꜱ Nᴏᴛ Fᴏʀ Yᴏᴜ. Sᴇᴀʀᴄʜ Yᴏᴜʀ Sᴇʟꜰ",
             "required": false
-        },
+      },
         "PMFILTER": {
             "description": "PM AutoFilter. set True to on / False to off",
             "value": "True",
             "required": false
         },
-        "
+        "G_FILTER": {
+            "description": "GlobalFilter set True to on / False to off",
+            "value": "True",
             "required": false
         },
-        "IMDB_TEMPLATE": {
-            "description": "Custom IMDB Template",
-            "value": "<b>Qᴜᴇʀʏ: {query}</b>\n\n🏷 Tɪᴛʟᴇ: <a href={url}>{title}</a>\n🎭 Gᴇɴʀᴇꜱ: {genres}\n📆 Yᴇᴀʀ: <a href={url}/releaseinfo>{year}</a>\n🌟 Rᴀᴛɪɴɢ: <a href={url}/ratings>{rating}</a>/10",
+        "BUTTON_LOCK": {
+            "description": "Button alert set True to on / False to off",
+            "value": "True",
+            "required": false
+        },
+        "RemoveBG_API": {
+            "description": "background remover website api key. get from https://www.remove.bg/b/background-removal-api",
+            "required": false 
+        },
+        "P_TTI_SHOW_OFF": { 
+            "description": "Customize Result Buttons to Callback or Url by (True = url / False = callback)",
+            "value": "True",
+            "required": false
+        }
+    },
+    "buildpacks":
+        [
+            {"url": "heroku/python"}
+        ]
