@@ -1,17 +1,23 @@
-FROM python:3.10
+# Use a smaller base image
+FROM python:3.10-slim AS builder
 
-# Update and install git in a single RUN command
-RUN apt update && apt upgrade -y && apt install git -y && rm -rf /var/lib/apt/lists/*
+# Install git and any dependencies, then clean up
+RUN apt update && apt upgrade -y && apt install git -y && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies without caching
+# Copy the requirements file and install dependencies without caching
 COPY requirements.txt /requirements.txt
 RUN pip install --no-cache-dir -U pip && pip install --no-cache-dir -U -r /requirements.txt
+
+# Start a new stage to minimize the final image size
+FROM python:3.10-slim
 
 # Set the working directory
 WORKDIR /app
 
-# Copy all files to the container
+# Copy only the installed dependencies and the application files from the builder stage
+COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 COPY . .
 
-# Command to run the bot
+# Set the command to run the bot
 CMD ["python", "bot.py"]
