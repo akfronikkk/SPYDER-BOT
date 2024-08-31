@@ -1,16 +1,15 @@
-# Use a smaller base image
-FROM python:3.10-slim AS builder
+# Use a smaller Alpine base image
+FROM python:3.10-alpine AS builder
 
 # Install git and any dependencies, then clean up
-RUN apt update && apt upgrade -y && apt install git -y && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache git
 
 # Copy the requirements file and install dependencies without caching
 COPY requirements.txt /requirements.txt
 RUN pip install --no-cache-dir -U pip && pip install --no-cache-dir -U -r /requirements.txt
 
 # Start a new stage to minimize the final image size
-FROM python:3.10-slim
+FROM python:3.10-alpine
 
 # Set the working directory
 WORKDIR /app
