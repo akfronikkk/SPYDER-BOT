@@ -236,3 +236,168 @@ def extract_user(message: Message) -> Union[int, str]:
             user_id = message.command[1]
             user_first_name = user_id
         try:
+            user_id = int(user_id)
+        except ValueError: pass
+    else:
+        user_id = message.from_user.id
+        user_first_name = message.from_user.first_name
+    return (user_id, user_first_name)
+
+
+def split_quotes(text: str) -> List:
+    if not any(text.startswith(char) for char in START_CHAR):
+        return text.split(None, 1)
+    counter = 1  # ignore first char -> is some kind of quote
+    while counter < len(text):
+        if text[counter] == "\\":
+            counter += 1
+        elif text[counter] == text[0] or (text[0] == SMART_OPEN and text[counter] == SMART_CLOSE):
+            break
+        counter += 1
+    else:
+        return text.split(None, 1)
+
+    # 1 to avoid starting quote, and counter is exclusive so avoids ending
+    key = remove_escapes(text[1:counter].strip())
+    # index will be in range, or `else` would have been executed and returned
+    rest = text[counter + 1:].strip()
+    if not key:
+        key = text[0] + text[0]
+    return list(filter(None, [key, rest]))
+
+def parser(text, keyword, cb_data):
+    if "buttonalert" in text: text = (text.replace("\n", "\\n").replace("\t", "\\t"))
+    buttons = []
+    note_data = ""
+    prev = 0
+    i = 0
+    alerts = []
+    for match in BTN_URL_REGEX.finditer(text):
+        n_escapes = 0
+        to_check = match.start(1) - 1
+        while to_check > 0 and text[to_check] == "\\":
+            n_escapes += 1
+            to_check -= 1
+        # if even, not escaped -> create button
+        if n_escapes % 2 == 0:
+            note_data += text[prev:match.start(1)]
+            prev = match.end(1)
+            if match.group(3) == "buttonalert":
+                # create a thruple with button label, url, and newline status
+                if bool(match.group(5)) and buttons:
+                    buttons[-1].append(InlineKeyboardButton(match.group(2), callback_data=f"{cb_data}:{i}:{keyword}"))
+                else:
+                    buttons.append([InlineKeyboardButton(match.group(2), callback_data=f"{cb_data}:{i}:{keyword}")])
+                i += 1
+                alerts.append(match.group(4))
+            elif bool(match.group(5)) and buttons:
+                buttons[-1].append(InlineKeyboardButton(match.group(2), url=match.group(4).replace(" ", "")))
+            else:
+                buttons.append([InlineKeyboardButton(match.group(2), url=match.group(4).replace(" ", ""))])
+        else:
+            note_data += text[prev:to_check]
+            prev = match.start(1) - 1
+    else: note_data += text[prev:]
+    try: return note_data, buttons, alerts
+    except: return note_data, buttons, None
+
+
+def remove_escapes(text: str) -> str:
+    res = ""
+    is_escaped = False
+    for counter in range(len(text)):
+        if is_escaped:
+            res += text[counter]
+            is_escaped = False
+        elif text[counter] == "\\":
+            is_escaped = True
+        else:
+            res += text[counter]
+    return res
+
+   
+def humanbytes(size):
+    if not size:
+        return ""
+    power = 2**10
+    n = 0
+    Dic_powerN = {0: ' ', 1: 'Ki', 2: 'Mi', 3: 'Gi', 4: 'Ti'}
+    while size > power:
+        size /= power
+        n += 1
+    return str(round(size, 2)) + " " + Dic_powerN[n] + 'B'
+
+def get_time(seconds):
+    periods = [('ᴅ', 86400), ('ʜ', 3600), ('ᴍ', 60), ('ꜱ', 1)]
+    result = ''
+    for period_name, period_seconds in periods:
+        if seconds >= period_seconds:
+            period_value, seconds = divmod(seconds, period_seconds)
+            result += f'{int(period_value)}{period_name}'
+    return result
+    
+async def get_shortlink(link):
+    url = f'{SHORT_URL}/api'
+    params = {'api': SHORT_API, 'url': link}
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, params=params, raise_for_status=True, ssl=False) as response:
+                data = await response.json()
+                if data["status"] == "success":
+                    return data['shortenedUrl']
+                else:
+                    logger.error(f"Error: {data['message']}")
+                    return link
+    except Exception as e:
+        logger.error(e)
+        return link
+        
+                    
+    except aiohttp.ClientResponseError as e:
+        logger.error(f"HTTP error: {e.status} - {e.message}")
+        return link
+    except aiohttp.ClientError as e:
+        logger.error(f"Client error: {e}")
+        return link
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        return link
+
+# from Midukki-RoBoT
+def extract_time(time_val):
+    if any(time_val.endswith(unit) for unit in ("s", "m", "h", "d")):
+        unit = time_val[-1]
+        time_num = time_val[:-1]  # type: str
+        if not time_num.isdigit():
+            return None
+
+        if unit == "s":
+            bantime = datetime.now() + timedelta(seconds=int(time_num)) 
+        elif unit == "m":
+            bantime = datetime.now() + timedelta(minutes=int(time_num))
+        elif unit == "h":
+            bantime = datetime.now() + timedelta(hours=int(time_num))
+        elif unit == "d":
+            bantime = datetime.now() + timedelta(days=int(time_num))
+        else:
+            # how even...?
+            return None
+        return bantime
+    else:
+        return None
+
+
+async def admin_check(message: Message) -> bool:
+    if not message.from_user: return False
+    if message.chat.type not in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]: return False
+    if message.from_user.id in [777000, 1087968824]: return True
+    client = message._client
+    chat_id = message.chat.id
+    user_id = message.from_user.id
+    check_status = await client.get_chat_member(chat_id=chat_id,user_id=user_id)
+    admin_strings = [enums.ChatMemberStatus.OWNER, enums.ChatMemberStatus.ADMINISTRATOR]
+    if check_status.status not in admin_strings: return False
+    else: return True
+
+async def admin_filter(filt, client, message):
+    return await admin_check(message)
