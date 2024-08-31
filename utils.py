@@ -1,9 +1,4 @@
-import logging
-import os
-import re
-import asyncio
-import requests
-import aiohttp
+import logging, os, re, asyncio, requests, aiohttp 
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
 from pyrogram.types import Message, InlineKeyboardButton
 from pyrogram import filters, enums
@@ -12,7 +7,6 @@ from imdb import Cinemagoer
 from typing import Union, List
 from datetime import datetime, timedelta
 from database.users_chats_db import db
-from bs4 import BeautifulSoup
 from PIL import Image
 from io import BytesIO
 import pytesseract
@@ -332,32 +326,6 @@ def get_time(seconds):
             result += f'{int(period_value)}{period_name}'
     return result
     
-async def get_shortlink(link):
-    url = f'{SHORT_URL}/api'
-    params = {'api': SHORT_API, 'url': link}
-    try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, params=params, raise_for_status=True, ssl=False) as response:
-                data = await response.json()
-                if data["status"] == "success":
-                    return data['shortenedUrl']
-                else:
-                    logger.error(f"Error: {data['message']}")
-                    return link
-    except Exception as e:
-        logger.error(e)
-        return link
-        
-                    
-    except aiohttp.ClientResponseError as e:
-        logger.error(f"HTTP error: {e.status} - {e.message}")
-        return link
-    except aiohttp.ClientError as e:
-        logger.error(f"Client error: {e}")
-        return link
-    except Exception as e:
-        logger.error(f"Unexpected error: {e}")
-        return link
 
 # from Midukki-RoBoT
 def extract_time(time_val):
