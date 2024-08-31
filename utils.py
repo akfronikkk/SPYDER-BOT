@@ -156,10 +156,6 @@ async def get_youtube_info(url: str):
         info = ydl.extract_info(url, download=False)
     return info
 
-async def handle_pinterest_link(url: str):
-    # Example placeholder for Pinterest integration
-    return f"Pinterest link: {url}"
-
 async def handle_instagram_link(url: str):
     # Example placeholder for Instagram integration
     return f"Instagram link: {url}"
