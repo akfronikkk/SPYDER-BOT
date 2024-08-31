@@ -23,7 +23,6 @@ cinemagoer==2023.5.1
 
 #---social media---#
 instaloader==4.10.1  # For Instagram
-pinterest-api==0.3.0 # For Pinterest (if available)
 
 #---text extraction---#
 pytesseract==0.4.0
