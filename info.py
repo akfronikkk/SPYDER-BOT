@@ -16,7 +16,7 @@ BOT_TOKEN = environ['BOT_TOKEN']
 
 # Bot settings
 WEB_SUPPORT = bool(environ.get("WEBHOOK", 'True')) # for web support on/off
-PICS = (environ.get('PICS' ,'https://c4.wallpaperflare.com/wallpaper/571/330/485/playstation-5-spider-man-playstation-spiderman-homecoming-miles-morales-hd-wallpaper-preview.jpg')).split()
+PICS = (environ.get('PICS' ,'https://te.legra.ph/file/69e700fda5d92b13f643b.jpg')).split()
 UPTIME = time.time()
 
 # Admins, Channels & Users
