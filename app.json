@@ -30,14 +30,6 @@
             "description": "Username or ID of Admin. Separate multiple Admins by space.",
             "required": true
         },
-        "SHORT_API": {
-            "description": "Api Key Of shortner You Use.",
-            "required": false
-        },
-        "SHORT_URL": {
-            "description": "Url of shortner site you use.",
-            "required": false
-        },
         "PICS": {
             "description": "Add some telegraph link of pictures .",
             "required": false
@@ -57,7 +49,7 @@
         },
         "CUSTOM_FILE_CAPTION": {
             "description": "A custom file caption for your files. formatable with , file_name, file_caption, file_size, Read Readme.md for better understanding.",
-            "value": "Hey {mention}👋\n\n{file_name}\n\n🔘 size - {file_size}\n\n╭─── • ❰ @DockHacks ❱ • ────➤\n┣ ▫️ @DocHacks\n┣ ▫️ @ihackerdoc_bot\n╰─────── • ◆ • ───────➤",
+            "value": "",
             "required": false
         },
         "DATABASE_URL": {
@@ -114,11 +106,6 @@
             "value": "",
             "required": false
         },
-        "WELCOM_PIC": {
-            "description": "Welcome message pic (telegraph link)",
-            "value": "",
-            "required": false
-        },
         "WELCOM_TEXT": {
             "description": "your group welcome text keyword({user} = joined use & {chat} = your chat name",
             "value": "Hᴇʟʟᴏ {user} 💞\nWᴇʟᴄᴏᴍᴇ ᴛᴏ {chat}.\n\nꜱʜᴀʀᴇ & ꜱᴜᴩᴩᴏʀᴛ, ʀᴇqᴜᴇꜱᴛ ʏᴏᴜ ᴡᴀɴᴛᴇᴅ ᴍᴏᴠɪᴇꜱ",
@@ -144,15 +131,11 @@
             "value": "True",
             "required": false
         },
-        "RemoveBG_API": {
-            "description": "background remover website api key. get from https://www.remove.bg/b/background-removal-api",
-            "required": false 
-        },
         "P_TTI_SHOW_OFF": { 
             "description": "Customize Result Buttons to Callback or Url by (True = url / False = callback)",
             "value": "True",
             "required": false
-        }
+        
     },
     "buildpacks":
         [
