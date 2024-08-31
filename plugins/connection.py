@@ -7,6 +7,7 @@ import logging
 logger = logging.getLogger(name)
 logger.setLevel(logging.WARNING)  # Adjust the logging level as needed
 
+
 @Client.on_message((filters.private | filters.group) & filters.command('connect'))
 async def addconnection(client, message):
     userid = message.from_user.id if message.from_user else None
