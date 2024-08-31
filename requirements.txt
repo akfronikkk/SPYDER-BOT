@@ -25,7 +25,7 @@ cinemagoer==2023.5.1
 instaloader==4.10.1  # For Instagram
 
 #---text extraction---#
-pytesseract==0.4.0
+pytesseract==0.3.13
 easyocr==1.6.0
 
 #---others----#
