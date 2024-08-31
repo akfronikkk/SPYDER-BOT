@@ -1,135 +1,97 @@
-import pymongo
-
+import motor.motor_asyncio
 from info import DATABASE_URL, DATABASE_NAME
-
 import logging
-logger = logging.getLogger(__name__)
+
+# Set up logging
+logger = logging.getLogger(name)
 logger.setLevel(logging.ERROR)
 
-myclient = pymongo.MongoClient(DATABASE_URL)
-mydb = myclient[DATABASE_NAME]
-mycol = mydb['CONNECTION']   
-
+# Initialize Motor client and database
+client = motor.motor_asyncio.AsyncIOMotorClient(DATABASE_URL)
+db = client[DATABASE_NAME]
+collection = db['CONNECTION']
 
 async def add_connection(group_id, user_id):
-    query = mycol.find_one(
-        { "_id": user_id },
-        { "_id": 0, "active_group": 0 }
-    )
-    if query is not None:
-        group_ids = [x["group_id"] for x in query["group_details"]]
-        if group_id in group_ids:
-            return False
+    try:
+        result = await collection.update_one(
+            {'_id': user_id, 'group_details.group_id': {'$ne': group_id}},  # Ensure group_id doesn't already exist
+            {
+                '$push': {'group_details': {'group_id': group_id}},
+                '$set': {'active_group': group_id}
+            },
+            upsert=True  # Insert if not exists
+        )
+        return result.modified_count > 0 or result.upserted_id is not None
+    except Exception:
+        logger.exception('Error adding connection', exc_info=True)
+        return False
 
-    group_details = {
-        "group_id" : group_id
-    }
-
-    data = {
-        '_id': user_id,
-        'group_details' : [group_details],
-        'active_group' : group_id,
-    }
-
-    if mycol.count_documents( {"_id": user_id} ) == 0:
-        try:
-            mycol.insert_one(data)
-            return True
-        except:
-            logger.exception('Some error occured!', exc_info=True)
-
-    else:
-        try:
-            mycol.update_one(
-                {'_id': user_id},
-                {
-                    "$push": {"group_details": group_details},
-                    "$set": {"active_group" : group_id}
-                }
-            )
-            return True
-        except:
-            logger.exception('Some error occured!', exc_info=True)
-
-        
 async def active_connection(user_id):
-
-    query = mycol.find_one(
-        { "_id": user_id },
-        { "_id": 0, "group_details": 0 }
+    query = await collection.find_one(
+        {'_id': user_id},
+        {'_id': 0, 'active_group': 1}
     )
-    if not query:
-        return None
-
-    group_id = query['active_group']
-    if group_id != None:
-        return int(group_id)
-    else:
-        return None
-
+    if query and query.get('active_group'):
+        return int(query['active_group'])
+    return None
 
 async def all_connections(user_id):
-    query = mycol.find_one(
-        { "_id": user_id },
-        { "_id": 0, "active_group": 0 }
+    query = await collection.find_one(
+        {'_id': user_id},
+        {'_id': 0, 'group_details.group_id': 1}
     )
-    if query is not None:
-        return [x["group_id"] for x in query["group_details"]]
-    else:
-        return None
-
+    if query and query.get('group_details'):
+        return [x['group_id'] for x in query['group_details']]
+    return []
 
 async def if_active(user_id, group_id):
-    query = mycol.find_one(
-        { "_id": user_id },
-        { "_id": 0, "group_details": 0 }
+    count = await collection.count_documents(
+        {'_id': user_id, 'active_group': group_id},
+        limit=1  # Optimization: Stop searching after 1 match
     )
-    return query is not None and query['active_group'] == group_id
-
+    return count > 0
 
 async def make_active(user_id, group_id):
-    update = mycol.update_one(
+    result = await collection.update_one(
         {'_id': user_id},
-        {"$set": {"active_group" : group_id}}
+        {'$set': {'active_group': group_id}}
     )
-    return update.modified_count != 0
-
+    return result.modified_count > 0
 
 async def make_inactive(user_id):
-    update = mycol.update_one(
+    result = await collection.update_one(
         {'_id': user_id},
-        {"$set": {"active_group" : None}}
+        {'$set': {'active_group': None}}
     )
-    return update.modified_count != 0
-
+    return result.modified_count > 0
 
 async def delete_connection(user_id, group_id):
-
     try:
-        update = mycol.update_one(
-            {"_id": user_id},
-            {"$pull" : { "group_details" : {"group_id":group_id} } }
+        # Remove the group_id from group_details
+        result = await collection.update_one(
+            {'_id': user_id},
+            {'$pull': {'group_details': {'group_id': group_id}}}
         )
-        if update.modified_count == 0:
+        if result.modified_count == 0:
             return False
-        query = mycol.find_one(
-            { "_id": user_id },
-            { "_id": 0 }
-        )
-        if len(query["group_details"]) >= 1:
-            if query['active_group'] == group_id:
-                prvs_group_id = query["group_details"][len(query["group_details"]) - 1]["group_id"]
 
-                mycol.update_one(
+        # Check if we need to update active_group
+        query = await collection.find_one({'_id': user_id})
+        if query and query.get('group_details'):
+            if query['active_group'] == group_id:
+                # Set the last group's ID as the new active_group
+                new_active_group = query['group_details'][-1]['group_id']
+                await collection.update_one(
                     {'_id': user_id},
-                    {"$set": {"active_group" : prvs_group_id}}
+                    {'$set': {'active_group': new_active_group}}
                 )
         else:
-            mycol.update_one(
+            # No group_details left, set active_group to None
+            await collection.update_one(
                 {'_id': user_id},
-                {"$set": {"active_group" : None}}
+                {'$set': {'active_group': None}}
             )
         return True
-    except Exception as e:
-        logger.exception(f'Some error occured! {e}', exc_info=True)
+    except Exception:
+        logger.exception('Error deleting connection', exc_info=True)
         return False
