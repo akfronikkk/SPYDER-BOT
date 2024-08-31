@@ -9,11 +9,10 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from marshmallow.exceptions import ValidationError
 from info import FILE_DB_URL, FILE_DB_NAME, COLLECTION_NAME, MAX_RIST_BTNS
 
-# Set up logging
-logger = logging.getLogger(name)
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-# Initialize Motor client and database
+
 client = AsyncIOMotorClient(FILE_DB_URL)
 db = client[FILE_DB_NAME]
 instance = Instance.from_db(db)
@@ -31,6 +30,7 @@ class Media(Document):
     class Meta:
         collection_name = COLLECTION_NAME
 
+
 async def save_file(media):
     file_id, file_ref = unpack_new_file_id(media.file_id)
     file_name = re.sub(r"@\w+|(_|\-|\.|\+)", " ", str(media.file_name))
@@ -43,53 +43,51 @@ async def save_file(media):
             file_type=media.file_type,
             mime_type=media.mime_type
         )
-    except ValidationError as e:
-        logger.exception('Validation Error occurred while saving file in database', exc_info=True)
+    except ValidationError:
+        logger.exception('Error Occurred While Saving File In Database')
         return False, 2
-    try:
-        await file.commit()
-    except DuplicateKeyError:
-        logger.warning(f"{file_name} is already saved in the database")
-        return False, 0
     else:
-        logger.info(f"{file_name} has been saved in the database")
-        return True, 1
+        try:
+            await file.commit()
+        except DuplicateKeyError:      
+            logger.warning(str(getattr(media, "file_name", "NO FILE NAME")) + " is already saved in database")
+            return False, 0
+        else:
+            logger.info(str(getattr(media, "file_name", "NO FILE NAME")) + " is saved in database")
+            return True, 1
 
-async def get_search_results(query, file_type=None, max_results=MAX_RIST_BTNS, offset=0, filter=False):
+
+
+async def get_search_results(query, file_type=None, max_results=(MAX_RIST_BTNS), offset=0, filter=False):
     query = query.strip()
-    if not query:
-        raw_pattern = '.'
-    elif ' ' not in query:
-        raw_pattern = r'(\b|[\.\+\-_])' + query + r'(\b|[\.\+\-_])'
-    else:
-        raw_pattern = query.replace(' ', r'.*[\s\.\+\-_]')
-    
-    try:
-        regex = re.compile(raw_pattern, flags=re.IGNORECASE)
-    except re.error as e:
-        logger.exception('Regex compilation error', exc_info=True)
-        return [], '', 0
+    if not query: raw_pattern = '.'
+    elif ' ' not in query: raw_pattern = r'(\b|[\.\+\-_])' + query + r'(\b|[\.\+\-_])'
+    else: raw_pattern = query.replace(' ', r'.*[\s\.\+\-_]')
+    try: regex = re.compile(raw_pattern, flags=re.IGNORECASE)
+    except: return [], '', 0
+    filter = {'file_name': regex}
+    if file_type: filter['file_type'] = file_type
 
-    search_filter = {'file_name': regex}
-    if file_type:
-        search_filter['file_type'] = file_type
-
-    total_results = await Media.count_documents(search_filter)
+    total_results = await Media.count_documents(filter)
     next_offset = offset + max_results
-    if next_offset > total_results:
-        next_offset = ''
+    if next_offset > total_results: next_offset = ''
 
-    cursor = Media.find(search_filter)
+    cursor = Media.find(filter)
+    # Sort by recent
     cursor.sort('$natural', -1)
+    # Slice files according to offset and max results
     cursor.skip(offset).limit(max_results)
+    # Get list of files
     files = await cursor.to_list(length=max_results)
-    
     return files, next_offset, total_results
+
 
 async def get_file_details(query):
     filter = {'file_id': query}
-    filedetails = await Media.find_one(filter)
+    cursor = Media.find(filter)
+    filedetails = await cursor.to_list(length=1)
     return filedetails
+
 
 def encode_file_id(s: bytes) -> str:
     r = b""
@@ -104,8 +102,10 @@ def encode_file_id(s: bytes) -> str:
             r += bytes([i])
     return base64.urlsafe_b64encode(r).decode().rstrip("=")
 
+
 def encode_file_ref(file_ref: bytes) -> str:
     return base64.urlsafe_b64encode(file_ref).decode().rstrip("=")
+
 
 def unpack_new_file_id(new_file_id):
     """Return file_id, file_ref"""
