@@ -30,7 +30,6 @@ easyocr==1.6.0
 
 #---others----#
 opencv-python-headless==4.5.4.60
-googletrans==3.1.0a0
 telegraph==2.2.0
 python-dotenv==0.21.1
 gTTS==2.3.1
