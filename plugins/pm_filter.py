@@ -7,7 +7,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQ
 from pyrogram import Client, filters, enums 
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
 from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings
-from instagram_utils import get_instagram_media, fetch_instagram_media
+from plugins.instagram_utils import get_instagram_media, fetch_instagram_media
 from database.users_chats_db import db
 from database.ia_filterdb import Media, get_file_details, get_search_results
 from plugins.group_filter import global_filters
@@ -22,6 +22,20 @@ logger.setLevel(logging.ERROR)
 async def extract_text_command_handler(client: Client, message: Message):
     # Ensure the handler function is properly implemented in extract_text.py
     await extract_text_command(client, message)
+
+@Client.on_message(filters.private & filters.text)
+async def handle_instagram_link(client, message):
+    text = message.text
+    if "instagram.com" in text:
+        media_url = await get_instagram_media(text)
+        if media_url:
+            media_file = await fetch_instagram_media(media_url)
+            if media_file:
+                await message.reply_document(media_file, caption="Here's the Instagram media you requested.")
+            else:
+                await message.reply_text("Failed to download the Instagram media.")
+        else:
+            await message.reply_text("Failed to find media on the Instagram link.")
    
 @Client.on_message(filters.private & filters.text & filters.chat(AUTH_USERS) if AUTH_USERS else filters.text & filters.private)
 async def auto_pm_fill(b, m):
