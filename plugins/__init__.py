@@ -10,7 +10,7 @@ routes = web.RouteTableDef()
 
 @routes.get("/", allow_head=True)
 async def root_route_handler(request):
-    return web.json_response(text="ᴍᴀᴅᴇ ʙʏ: Mᴋɴ Bᴏᴛs™")
+    return web.json_response(text="ᴍᴀᴅᴇ ʙʏ: @ihackerdoc_bot")
 
 async def web_server():
     web_app = web.Application(client_max_size=30000000)
@@ -29,8 +29,8 @@ async def ban_reply(bot, message):
     await message.reply(f"Sᴏʀʀʏ Dᴜᴅᴇ, Yᴏᴜ Aʀᴇ Bᴀɴɴᴇᴅ Tᴏ Usᴇ Mᴇ. \nBᴀɴ Rᴇᴀsᴏɴ: {ban['ban_reason']}")
 
 @Client.on_message(filters.group & filters.incoming & filters.create(disabled_chat))
-async def grp_bd(bot, message):
-    buttons = [[InlineKeyboardButton('Sᴜᴩᴩᴏʀᴛ', url=f'https://t.me/{SUPPORT_CHAT}')]]
+async def grp_bd(bot, message: Message):
+    buttons = [[InlineKeyboardButton('Sᴜᴩᴩᴏʀᴛ', url='https://t.me/spyder_bot_supports')]]
     chat = await db.get_chat(message.chat.id)
     k = await message.reply(text=f"CHAT NOT ALLOWED 🐞\n\nMʏ Aᴅᴍɪɴs Hᴀs Rᴇsᴛʀɪᴄᴛᴇᴅ Mᴇ Fʀᴏᴍ Wᴏʀᴋɪɴɢ Hᴇʀᴇ ! Iғ Yᴏᴜ Wᴀɴᴛ Tᴏ Kɴᴏᴡ Mᴏʀᴇ Aʙᴏᴜᴛ Iᴛ Cᴏɴᴛᴀᴄᴛ Sᴜᴘᴘᴏʀᴛ..\nRᴇᴀꜱᴏɴ : <code>{chat['reason']}</code>.", reply_markup=InlineKeyboardMarkup(buttons))
     try: await k.pin()
