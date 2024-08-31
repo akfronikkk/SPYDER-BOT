@@ -3,18 +3,27 @@ from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidD
 from Script import script
 from utils import get_shortlink 
 from info import AUTH_USERS, PM_IMDB, SINGLE_BUTTON, PROTECT_CONTENT, SPELL_CHECK_REPLY, IMDB_TEMPLATE, IMDB_DELET_TIME, PMFILTER, G_FILTER, SHORT_URL, SHORT_API
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, Message
 from pyrogram import Client, filters, enums 
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
 from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings
+from pinterest_utils import download_pinterest_photo, fetch_image
+from instagram_utils import get_instagram_media, fetch_instagram_media
 from database.users_chats_db import db
 from database.ia_filterdb import Media, get_file_details, get_search_results
 from plugins.group_filter import global_filters
+from plugins.extract_text import extract_text_command  
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
 
 
+@Client.on_message(filters.command("extract_text") & filters.private)
+async def extract_text_command_handler(client: Client, message: Message):
+    # Ensure the handler function is properly implemented in extract_text.py
+    await extract_text_command(client, message)
+   
 @Client.on_message(filters.private & filters.text & filters.chat(AUTH_USERS) if AUTH_USERS else filters.text & filters.private)
 async def auto_pm_fill(b, m):
     if PMFILTER:       
