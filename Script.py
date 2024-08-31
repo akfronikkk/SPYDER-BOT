@@ -1,23 +1,27 @@
 class script(object):  
-    START_TXT = """<b>✨ Hᴇʟʟᴏ {user}.
+    START_TXT = """<b>👋🏻 Hᴇʟʟᴏ {user}
 
-Mʏ Nᴀᴍᴇ Is {bot}.
+Hᴇʏ ᴛʜᴇʀᴇ! I ᴀᴍ Sᴘʏᴅᴇʀ Bᴏᴛ 🎉
 
-I Cᴀɴ Pʀᴏᴠɪᴅᴇ Mᴏᴠɪᴇ Fᴏʀ Yᴏᴜ Jᴜsᴛ Aᴅᴅ Mᴇ Iɴ Yᴏᴜʀ Gʀᴏᴜᴘ Oʀ Jᴏɪɴ Oᴜʀ Gʀᴏᴜᴘ</b>"""
+Wʜᴀᴛ Dᴏ Yᴏᴜ Nᴇᴇᴅ? Jᴜsᴛ Sᴇɴᴅ ɪᴛ Tᴏ Mᴇ:
+
+🎬 Wᴀɴᴛ ᴛᴏ Wᴀᴛᴄʜ A Mᴏᴠɪᴇ? Jᴜsᴛ Tʏᴘᴇ Tʜᴇ Nᴀᴍᴇ.
+🖼 Wᴀɴᴛ Tᴏ Exᴛʀᴀᴄᴛ Tᴇxᴛ Fʀᴏᴍ Iᴍᴀɢᴇs? Jᴜsᴛ Sᴇɴᴅ Mᴇ Tʜᴇ Iᴍᴀɢᴇ.
+🔗 Wᴀɴᴛ Tᴏ Dᴏᴡɴʟᴏᴀᴅ Aɴʏᴛʜɪɴɢ Fʀᴏᴍ Yᴛ/ɪɴsᴛᴀ/ᴘɪɴᴛᴇʀᴇsᴛ? Jᴜsᴛ Sᴇɴᴅ Mᴇ Tʜᴇ Lɪɴᴋ.</b>"""
     
     HELP_TXT = "Hᴇʏ {}\nHᴇʀᴇ Mꜱ Mʏ Hᴇʟᴩ"
 
-    ABOUT_TXT = """<b>✯ Mʏ ɴᴀᴍᴇ: {}
-✯ Dᴇᴠᴇʟᴏᴩᴇʀ: <a herf=https://t.me/Mr_MKN>ᴍʀ.ᴍᴋɴ ᴛɢ</a>
+    ABOUT_TXT = """<b>✯ Mʏ ɴᴀᴍᴇ: Sᴘʏᴅᴇʀ Bᴏᴛ
+✯ Dᴇᴠᴇʟᴏᴩᴇʀ: <a href=https://t.me/ihackerdoc_bot>ᴵʰᵃᶜᵏᵉʳᵈᵒᶜ</a>
 ✯ Cᴏᴅᴇᴅ Oɴ: ᴩʏᴛʜᴏɴ/ᴩʏʀᴏɢʀᴀᴍ
 ✯ Mʏ DᴀᴛᴀBᴀꜱᴇ: ᴍᴏɴɢᴏ-ᴅʙ
 ✯ Mʏ Sᴇʀᴠᴇʀ: ᴀɴʏᴡʜᴇʀᴇ
-✯ Mʏ Vᴇʀꜱɪᴏɴ: ᴩʀᴏꜰᴇꜱꜱᴏʀ-ʙᴏᴛ ᴠ4.5.0</b>"""
+✯ Mʏ Vᴇʀꜱɪᴏɴ: Sᴘʏᴅᴇʀ-ʙᴏᴛ ᴠ4.5.0</b>"""
    
     SOURCE_TXT = """<b>NOTE:</b>
-- ꜱᴏᴜʀᴄᴇ ᴄᴏᴅᴇ ʜᴇʀᴇ ◉› :<a href=https://github.com/MrMKN/PROFESSOR-BOT>𝐏𝐑𝐎𝐅𝐄𝐒𝐒𝐎𝐑-𝐁𝐎𝐓</a>
+- ꜱᴏᴜʀᴄᴇ ᴄᴏᴅᴇ ʜᴇʀᴇ ◉› :<a href=https://github.com/akfronikkk/SPYDER-BOT>𝐒𝐏𝐘𝐃𝐄𝐑-𝐁𝐎𝐓</a>
 
-<b>ᴅᴇᴠ: <a herf=https://t.me/Mr_MKN>ᴍʀ.ᴍᴋɴ ᴛɢ</a></b>"""
+<b>ᴅᴇᴠ: <a href=https://t.me/ihackerdoc_bot>ᴵʰᵃᶜᵏᵉʳᵈᵒᶜ</a></b>"""
 
     FILE_TXT = """<b>➤ Hᴇʟᴘ Fᴏʀ Fɪʟᴇ Sᴛᴏʀᴇ</b>
 
@@ -28,13 +32,13 @@ I Cᴀɴ Pʀᴏᴠɪᴅᴇ Mᴏᴠɪᴇ Fᴏʀ Yᴏᴜ Jᴜsᴛ Aᴅᴅ Mᴇ Iɴ
 ➪ /batch › Tᴏ Cʀᴇᴀᴛᴇ Lɪɴᴋ Fᴏʀ Mᴜʟᴛɪᴘʟᴇ Mᴇᴅɪᴀ
 
 <b>⪼ EG:</b>
-</code>/batch https://t.me/mkn_bots_updates/1 https://t.me/mkn_bots_updates/10</code>"""
+</code>/batch https://t.me/ihackerdoc_bot_updates/1 https://t.me/ihackerdoc_bot_updates/10</code>"""
   
     FILTER_TXT = "Sᴇʟᴇᴄᴛ Wʜɪᴄʜ Oɴᴇ Yᴏᴜ Wᴀɴᴛ...✨"
     
     GLOBALFILTER_TXT = """<b>Hᴇʟᴘ Fᴏʀ Gʟᴏʙᴀʟ Fɪʟᴛᴇʀs</b>
 
-<i>Fɪʟᴛᴇʀ Is Tʜᴇ Fᴇᴀᴛᴜʀᴇ Wᴇʀᴇ Usᴇʀs Cᴀɴ Sᴇᴛ Aᴜᴛᴏᴍᴀᴛᴇᴅ Rᴇᴘʟɪᴇs Fᴏʀ A Pᴀʀᴛɪᴄᴜʟᴀʀ Kᴇʏᴡᴏʀᴅ Aɴᴅ Bᴏᴛ  Wɪʟʟ Rᴇsᴘᴏɴᴅ Wʜᴇɴᴇᴠᴇʀ A Kᴇʏᴡᴏʀᴅ Is Fᴏᴜɴᴅ Tʜᴇ Mᴇssᴀɢᴇ</i>
+<i>Fɪʟᴛᴇʀ Is Tʜᴇ Fᴇᴀᴛᴜʀᴇ Wᴇʀᴇ Usᴇʀs Cᴀɴ Sᴇᴛ Aᴜᴛᴏᴍᴀᴛᴇᴅ Rᴇᴘʟɪᴇs Fᴏʀ A Pᴀʀᴛɪᴄᴜʟᴀʀ Kᴇʏᴡᴏʀᴅ Aɴᴅ Bᴏᴛ  Wɪʟʟ Rᴇsᴘᴏɴᴅ Wʜᴇɴᴇᴠᴇʀ A Kᴇʏᴡᴏʀᴅ Is Fᴏᴜɴᴅ Tʜᴇ Mᴇssᴀɪᴇ</i>
 
 <b>Nᴏᴛᴇ:</b>
 Tʜɪs Mᴏᴅᴜʟᴇ Oɴʟʏ Wᴏʀᴋs Fᴏʀ Mʏ Aᴅᴍɪɴs
