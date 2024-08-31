@@ -173,10 +173,10 @@ async def extract_text_from_image(image_bytes: bytes):
         logger.error(f"Error extracting text from image: {e}")
         return None
 
-repo = "https://https://github.com/akfronikkk/SPYDER-BOT"
-version = "SPYDER-BOT ᴠ1.0.0"
+repo = "https://github.com/MrMKN/PROFESSOR-BOT"
+version = "PROFESSOR-BOT ᴠ4.5.0"
 license = "GNU GENERAL PUBLIC LICENSE V2"
-copyright = "Copyright (C) 2024-present HackerDoc <https://github.com/ihackerdoc>"
+copyright = "Copyright (C) 2023-present MrMKN <https://github.com/MrMKN>"
 
 async def search_gagala(text):
     usr_agent = {
