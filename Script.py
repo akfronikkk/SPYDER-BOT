@@ -222,16 +222,21 @@ Fʀᴇᴇ Dɪꜱᴋ: {}"""
 
 Wᴇʟᴄᴏᴍᴇ ᴛᴏ {chat}.
 
-ꜱʜᴀʀᴇ & ꜱᴜᴩᴩᴏʀᴛ, ʀᴇqᴜᴇꜱᴛ ʏᴏᴜ ᴡᴀɴᴛᴇᴅ ᴍᴏᴠɪᴇꜱ"""
+ꜱʜᴀʀᴇ & ꜱᴜᴩᴩᴏʀᴛ, ʀᴇqᴜᴇꜱᴛ ᴍᴏᴠɪᴇꜱ"""
   
     IMDB_TEMPLATE = """<b>Qᴜᴇʀʏ: {query}</b>
 
-🏷 Tɪᴛʟᴇ: <a href={url}>{title}</a>
-🎭 Gᴇɴʀᴇꜱ: {genres}
-📆 Yᴇᴀʀ: <a href={url}/releaseinfo>{year}</a>
-🌟 Rᴀᴛɪɴɢ: <a href={url}/ratings>{rating}</a>/10"""
-   
-  
+🔖 𝗧𝗜𝗧𝗟𝗘: <a href={url}>{title}</a>
+🎭 𝗚𝗘𝗡𝗥𝗘𝗦: {genres}
+📆 𝗬𝗘𝗔𝗥: <a href={url}/releaseinfo>{year}</a>
+🌟 𝗥𝗔𝗧𝗜𝗡𝗚: <a href={url}/ratings>{rating}</a>/10
+🎙️ 𝗟𝗔𝗡𝗚𝗨𝗔𝗚𝗘𝗦: <code>{languages}</code>
+🎥 𝗗𝗜𝗥𝗘𝗖𝗧𝗢𝗥: {director}
+⏰ 𝗥𝗨𝗡𝗧𝗜𝗠𝗘: {runtime} Minutes
+🌍 𝗖𝗢𝗨𝗡𝗧𝗥𝗬: <code>{countries}</code>
+📖 𝗦𝗧𝗢𝗥𝗬: <code>{plot}</code>
+
+📌 𝗥𝗲𝗾𝘂𝗲𝘀𝘁𝗲𝗱 𝗯𝘆 🧑‍💻: {message.from_user.mention}"""
  
 
 
