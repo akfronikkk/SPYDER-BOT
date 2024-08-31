@@ -31,12 +31,9 @@ easyocr==1.6.0
 #---others----#
 opencv-python-headless==4.5.4.60
 telegraph==2.2.0
-python-dotenv==0.21.1
-gTTS==2.3.1
 Pillow==10.2.0
 psutil==5.9.4
 NumPy==1.26.2
 wheel
-ujson
 wget
 pytz
